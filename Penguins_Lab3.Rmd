@@ -1,0 +1,104 @@
+---
+title: "Penguins - Lab 3"
+author: "Grace"
+date: "2024-09-13"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Calling packages  
+``` {r}
+library(palmerpenguins)
+library(knitr)
+library(tidyverse)
+```
+
+
+## Data  
+We are looking at data collected on 344 individuals of 3 species of penguin from 3 islands in the Palmer Archipelago, Antarctica.  
+![Artwork by @allison_horst](https://allisonhorst.github.io/palmerpenguins/reference/figures/lter_penguins.png)
+
+## Single trait distribution  
+I will be exploring morphological variation in flipper length between the three penguin species.  
+
+```{r flipper length}
+ggplot(penguins, aes(x=species, y=flipper_length_mm)) +
+  geom_boxplot(aes(color=species)) +
+  theme_bw()
+
+
+penguins%>%
+  ggplot() +
+  geom_density(aes(x=flipper_length_mm, color = species, fill = species), alpha = 0.5) +
+  theme_bw()
+```
+
+
+This demonstrates that Gentoo penguins have consistently longer flippers than either Adelie or Chinstrap penguins and there is little overlap. Chinstrap penguins on average have longer flippers than Adelie penguins, but these two species have a lot of overlap in their spread.
+
+## Relationship between multiple traits  
+Here I will look at the relationship between bill length and depth and how that ratio may vary between different penguin species.  
+
+First, I will just look at the relationship between bill length and depth overall.
+```{r bill length:depth}
+penguins%>%
+  ggplot() +
+  geom_point(aes(x=bill_length_mm, y = bill_depth_mm, color = species)) +
+  theme_bw() +
+  labs(x = "Bill Length (mm)", y = "Bill Depth (mm)", title = "Bill Length vs. Depth in Three Species of Penguin")
+```
+
+This graph suggests that Adelie penguins tend to have bills that are more short and deep; that Gentoo penguins tend to have bills that are longer but less deep; and that Chinstrap penguins have beaks with a more balanced ratio between length and depth.
+
+
+Now I will look at it as a ratio more specifically:  
+```{r ratio}
+penguins%>%
+  ggplot() +
+  geom_boxplot(aes(x = species, y = (bill_length_mm/bill_depth_mm))) +
+  theme_bw() +
+  labs(x = "Penguin Species", y = "Ratio of Bill Length to Bill Depth", title = "Penguin Beak Dimensions by Species")
+```
+
+
+## Sexual dimorphism   
+I will investigate the difference in body mass by penguin sex, adding color to illustrate any possible differences in penguin species.  
+
+```{r sexual dimorphism}
+penguins%>%
+  filter(!is.na(sex)) %>%
+  ggplot() + 
+  geom_point(aes(x = sex, y = body_mass_g, color = species)) +
+  theme_bw() +
+  labs(x = "Sex", y = "Body Mass (g)", title = "Variation in Penguin Body Mass by Sex and Species")
+```
+
+Because it's hard to see the variation by species here, I'll divide each species into its own graph. Even before doing so, I can see that this initial graph suggests males have a greater body mass than females across species.
+
+```{r}
+penguins%>%
+  filter(!is.na(sex)) %>%
+  ggplot() + 
+  geom_density(aes(x = body_mass_g, color = sex)) +
+  theme_bw() +
+  facet_wrap(~ species, nrow = 1) +
+  labs(x = "Body Mass (g)", title = "Variation in Penguin Body Mass by Species and Sex")
+```  
+
+Yes - males tend to be larger than females in body mass across species. There is a lot of overlap between them; body mass is unlikely to be helpful in determining penguin sex when used as the only characteristic.
+
+## Free exploration  
+I'm interested in learning more about variation between different islands. For instance, how does body mass vary by island?
+
+```{r island species}
+penguins%>%
+  ggplot() +
+  geom_density(aes(x = body_mass_g, fill = island), alpha = 0.5) +
+  theme_bw() +
+  facet_wrap(~species)
+```
+
+It looks like Adelie penguins are the only species that live on all three islands; their body mass seems to be very consistent across islands. Chinstrap penguins live only on Dream Island, while Gentoo live only on Biscoe.
