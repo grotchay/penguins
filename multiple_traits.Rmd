@@ -1,0 +1,41 @@
+---
+title: "Multiple Traits"
+author: "Grace"
+date: "2024-09-13"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+``` {r echo=FALSE}
+library(palmerpenguins)
+library(knitr)
+library(tidyverse)
+```
+
+
+## Relationship between multiple traits  
+Here I will look at the relationship between bill length and depth and how that ratio may vary between different penguin species.  
+
+First, I will just look at the relationship between bill length and depth overall.
+```{r bill length:depth}
+penguins%>%
+  ggplot() +
+  geom_point(aes(x=bill_length_mm, y = bill_depth_mm, color = species)) +
+  theme_bw() +
+  labs(x = "Bill Length (mm)", y = "Bill Depth (mm)", title = "Bill Length vs. Depth in Three Species of Penguin")
+```
+
+This graph suggests that Adelie penguins tend to have bills that are more short and deep; that Gentoo penguins tend to have bills that are longer but less deep; and that Chinstrap penguins have beaks with a more balanced ratio between length and depth.
+
+
+Now I will look at it as a ratio more specifically:  
+```{r ratio}
+penguins%>%
+  ggplot() +
+  geom_boxplot(aes(x = species, y = (bill_length_mm/bill_depth_mm))) +
+  theme_bw() +
+  labs(x = "Penguin Species", y = "Ratio of Bill Length to Bill Depth", title = "Penguin Beak Dimensions by Species")
+```

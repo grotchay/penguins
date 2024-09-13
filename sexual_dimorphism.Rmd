@@ -1,0 +1,44 @@
+---
+title: "Sexual Dimorphism"
+author: "Grace"
+date: "2024-09-13"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+``` {r echo=FALSE}
+library(palmerpenguins)
+library(knitr)
+library(tidyverse)
+```
+
+
+## Sexual dimorphism   
+I will investigate the difference in body mass by penguin sex, adding color to illustrate any possible differences in penguin species.  
+
+```{r sexual dimorphism}
+penguins%>%
+  filter(!is.na(sex)) %>%
+  ggplot() + 
+  geom_point(aes(x = sex, y = body_mass_g, color = species)) +
+  theme_bw() +
+  labs(x = "Sex", y = "Body Mass (g)", title = "Variation in Penguin Body Mass by Sex and Species")
+```
+
+Because it's hard to see the variation by species here, I'll divide each species into its own graph. Even before doing so, I can see that this initial graph suggests males have a greater body mass than females across species.
+
+```{r}
+penguins%>%
+  filter(!is.na(sex)) %>%
+  ggplot() + 
+  geom_density(aes(x = body_mass_g, color = sex)) +
+  theme_bw() +
+  facet_wrap(~ species, nrow = 1) +
+  labs(x = "Body Mass (g)", title = "Variation in Penguin Body Mass by Species and Sex")
+```  
+
+Yes - males tend to be larger than females in body mass across species. There is a lot of overlap between them; body mass is unlikely to be helpful in determining penguin sex when used as the only characteristic.
